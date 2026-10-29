@@ -1,0 +1,550 @@
+/* ==========================================
+   VARIABLES (paleta y tonos)
+   ========================================== */
+:root{
+  --bg-deep:#040716; 
+  --bg-grid:rgba(0,255,255,0.05);
+  --cyan:#00f2ff; 
+  --violet:#7a00ff; 
+  --electric:#00d4ff;
+  --orange-core:#ff6a00; 
+  --yellow-core:#ffd400; 
+  --text-main:#e6f7ff;
+
+  /* Tono del título de vista (pill) */
+  --view-pill-bg:#122343; 
+  --view-pill-border:#0bbcff; 
+  --view-pill-text:#ffd400;
+}
+
+/* ==========================================
+   BASE
+   ========================================== */
+*{ box-sizing:border-box; }
+
+body{
+  font-family:'Orbitron',sans-serif;
+  margin:0; 
+  padding:20px 20px 110px 20px; 
+  color:var(--text-main);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(0,255,255,0.08), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(122,0,255,0.08), transparent 40%),
+    var(--bg-deep);
+}
+
+/* Accesibilidad foco visible */
+button:focus-visible, select:focus-visible, input:focus-visible, .skip-link:focus-visible{
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* Enlace de salto */
+.skip-link{
+  position:absolute; 
+  left:-9999px; top:0; 
+  background:#081028; 
+  color:#00f2ff;
+  padding:8px 12px; 
+  border-radius:8px;
+}
+.skip-link:focus{ left: 12px; top: 12px; z-index:9999; }
+
+/* ==========================================
+   TITULO
+   ========================================== */
+@keyframes titlePulse {
+  0%,100% { text-shadow: 0 0 10px var(--cyan); }
+  50% { text-shadow: 0 0 25px var(--cyan), 0 0 45px var(--violet); }
+}
+h2{
+  text-align:center; 
+  font-size:2.5rem; 
+  color:var(--cyan);
+  animation: titlePulse 4s infinite ease-in-out;
+}
+
+/* ==========================================
+   CONTENEDORES: FORMs y FILTROS
+   ========================================== */
+form,.filtro{
+  background:rgba(10,15,35,0.85); 
+  border:1px solid var(--cyan);
+  border-radius:14px; 
+  padding:15px; 
+  margin-bottom:20px;
+  box-shadow:0 0 20px rgba(0,255,255,0.2), inset 0 0 20px rgba(0,255,255,0.08);
+}
+
+/* ==========================================
+   INPUTS / SELECTS / BOTONES
+   ========================================== */
+select,input,button{
+  background:#0b1230; 
+  border:1px solid var(--electric); 
+  color:var(--electric);
+  padding:8px 14px; 
+  border-radius:8px; 
+  font-family:'Orbitron',monospace; 
+  transition:.3s;
+}
+button{
+  background:linear-gradient(135deg,var(--cyan),var(--violet));
+  color:#050b1f; 
+  font-weight:900; 
+  cursor:pointer; 
+  box-shadow:0 0 15px var(--cyan);
+  position:relative; 
+  overflow:hidden;
+}
+button:hover{
+  transform:translateY(-4px) scale(1.06);
+  box-shadow:0 0 20px var(--cyan), 0 0 40px var(--violet), 0 0 60px var(--cyan);
+}
+button::before{
+  content:""; 
+  position:absolute; 
+  top:0; left:-120%;
+  width:120%; height:100%;
+  background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  transform:skewX(-20deg); 
+  transition:.7s ease;
+}
+button:hover::before{ left:120%; }
+button::after{
+  content:""; 
+  position:absolute; 
+  inset:-4px; 
+  border-radius:10px;
+  border:1px solid rgba(0,255,255,0.4); 
+  opacity:0; 
+  transition:.4s ease;
+}
+button:hover::after{
+  opacity:1; 
+  box-shadow:0 0 15px var(--cyan), 0 0 30px var(--violet);
+}
+
+/* ==========================================
+   LÍNEA DE CORTE + TÍTULO DE VISTA CENTRADO
+   ========================================== */
+.corte-line{ display:flex; align-items:center; gap:12px; }
+.corte-controls, .corte-spacer{ flex:1 1 240px; display:flex; align-items:center; gap:8px; }
+.corte-spacer{ justify-content:flex-end; }
+.vista-titulo{
+  flex:0 1 auto; 
+  margin:0 auto; 
+  padding:6px 14px; 
+  border-radius:999px;
+  background:var(--view-pill-bg); 
+  color:var(--view-pill-text); 
+  border:1px solid var(--view-pill-border);
+  font-weight:900; 
+  letter-spacing:.5px; 
+  text-align:center; 
+  box-shadow:0 0 10px rgba(11,188,255,.25);
+}
+
+/* ==========================================
+   TABLA
+   ========================================== */
+.tabla-scroll{ overflow:auto; max-height:70vh; border-radius:14px; }
+table{ width:100%; border-collapse:collapse; background:rgba(8,12,30,0.95); table-layout:auto; }
+th,td{ padding:12px; text-align:center; border:1.8px solid rgba(0,255,255,0.45); box-shadow:inset 0 0 10px rgba(0,255,255,0.25); }
+thead th{ position:sticky; top:0; background:#081028; color:var(--cyan); text-shadow:0 0 15px var(--cyan); }
+
+/* Hover sin tapar colores base */
+tbody tr:hover td:not(.cero):not(.pendiente):not(.total):not(.total-general){
+  background: rgba(0,255,255,0.15);
+  box-shadow: inset 0 0 20px rgba(0,255,255,0.45);
+}
+
+/* ==========================================
+   FILA TOTAL
+   ========================================== */
+@keyframes holoMove { 
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+.fila-total{
+  position:relative;
+  background:linear-gradient(135deg,#00f2ff,#0066ff,#7a00ff,#00f2ff);
+  background-size:300% 300%;
+  animation: holoMove 8s linear infinite;
+  border-top:4px solid var(--cyan);
+  border-bottom:4px solid #0066ff;
+  box-shadow:0 0 30px rgba(0,255,255,0.9), 0 0 50px rgba(0,102,255,0.7);
+}
+.fila-total td{ font-size:1.08rem; font-weight:900; color:#fff; }
+
+/* ==========================================
+   TOTAL GENERAL
+   ========================================== */
+@keyframes corePulse {
+  0%,100% { box-shadow: 0 0 25px var(--orange-core); }
+  50% { box-shadow: 0 0 50px var(--orange-core), 0 0 80px var(--yellow-core); }
+}
+.total-general{
+  background:radial-gradient(circle at center,#ff7a00 0%,#ff6a00 35%,#ff9900 65%,#ffb300 100%);
+  border:5px solid var(--yellow-core); 
+  color:#1a0600; 
+  font-size:1.2rem; 
+  font-weight:900;
+  animation: corePulse 3s infinite ease-in-out;
+}
+
+/* ==========================================
+   CELDAS ESPECIALES
+   ========================================== */
+/* CERO (verde) */
+@keyframes zeroFade{ 0%{ box-shadow:0 0 10px rgba(0,255,120,0.8);} 100%{ box-shadow:0 0 25px rgba(0,255,120,0.4);} }
+td.cero{
+  background:linear-gradient(135deg,#02140f,#001a12); 
+  color:#00ff9d; font-weight:900;
+  border:2px solid #00ff9d; text-shadow:0 0 8px #00ff9d; 
+  animation: zeroFade 2s infinite alternate;
+}
+/* PENDIENTE (rojo) */
+@keyframes pendingPulse{ 0%{ box-shadow:0 0 10px rgba(255,80,80,0.6);} 100%{ box-shadow:0 0 26px rgba(255,80,80,0.28);} }
+td.pendiente{
+  background:linear-gradient(135deg,#3a0e12,#2e0b0f); 
+  color:#fff; font-weight:900;
+  border:2px solid #ff6b6b; 
+  animation: pendingPulse 1.8s infinite alternate;
+}
+
+/* ==========================================
+   PROTEGER TOTALES (sin sobrescribir estilos)
+   ========================================== */
+td.total, td.total strong{
+  color: var(--text-main);
+  background: transparent !important;
+  border: 1.8px solid rgba(0,255,255,0.45) !important;
+  text-shadow: none !important;
+}
+.fila-total td{ border: 1.8px solid rgba(0,255,255,0.45) !important; }
+
+/* ==========================================
+   INDICADORES COMPACTOS (TV)
+   ========================================== */
+.indicador-wrap{
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.indicador-total{
+  font-size:1.05rem; font-weight:900; color:#ffffff;
+}
+.indicador-det{
+  display:flex; gap:6px; font-size:0.72rem; font-weight:700;
+}
+.ind-a{ background:#00c853; padding:2px 6px; border-radius:4px; color:#001a0d; }
+.ind-b{ background:#ffd600; padding:2px 6px; border-radius:4px; color:#1a1200; }
+.ind-c{ background:#ff3d00; padding:2px 6px; border-radius:4px; color:white; }
+
+/* Vista Indicadores aún más compacta */
+body.view-indicadores .tabla-scroll{
+  max-height: calc(100vh - 200px); 
+}
+body.view-indicadores table{
+  table-layout: fixed;
+  font-size: 0.70rem;            
+}
+body.view-indicadores th,
+body.view-indicadores td{
+  padding: 4px;                  
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+body.view-indicadores .indicador-total{ font-size:0.90rem; }
+body.view-indicadores .indicador-det{ font-size:0.60rem; gap:3px; }
+body.view-indicadores .ind-a,
+body.view-indicadores .ind-b,
+body.view-indicadores .ind-c{
+  padding: 1px 4px;              
+}
+
+/* ==========================================
+   RESUMEN A/B/C (visible, compacto y que resalta)
+   ========================================== */
+#panelResumen{
+  margin-bottom: 10px;
+}
+#panelResumen .resumen-panel{
+  overflow: visible;
+}
+#panelResumen table.resumen{
+  width: auto; 
+  margin: 0 auto; 
+  font-size: 0.85rem; 
+  border-collapse: collapse;
+  background: rgba(8,12,30,0.95);
+  box-shadow: 0 0 18px rgba(0,255,255,0.35), inset 0 0 10px rgba(0,255,255,0.12);
+}
+#panelResumen table.resumen thead th{
+  background: #081028;
+  color: var(--cyan);
+  padding: 6px 10px;
+  border: 1.6px solid rgba(0,255,255,0.45);
+  text-shadow: 0 0 12px var(--cyan);
+}
+#panelResumen table.resumen td{
+  padding: 6px 10px;
+  border: 1.6px solid rgba(0,255,255,0.45);
+}
+#panelResumen .resumen--indicadores tr.row-a td{
+  background: rgba(0,200,83,0.15);
+  color: #a2ffcf; font-weight: 900;
+}
+#panelResumen .resumen--indicadores tr.row-b td{
+  background: rgba(255,214,0,0.15);
+  color: #ffe98a; font-weight: 900;
+}
+#panelResumen .resumen--indicadores tr.row-c td{
+  background: rgba(255,61,0,0.15);
+  color: #ffb3a2; font-weight: 900;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+.eri-footer{
+  position:fixed; bottom:0; width:100%;
+  background:rgba(10,15,35,0.95); border-top:2px solid var(--cyan);
+  padding:10px 0 12px 0; text-align:center;
+}
+.eri-logo{ font-size:3rem; font-weight:900; color:var(--cyan); text-shadow:0 0 20px var(--cyan); }
+.eri-text{
+  font-size:1.8rem; font-weight:900; color:#ffd400;
+  text-shadow:0 0 12px rgba(255,255,255,0.6);
+  letter-spacing:.5px; line-height:1.1; display:block; margin-top:4px;
+}
+
+/* ==========================================
+   RESPONSIVO
+   ========================================== */
+@media (max-width:720px){
+  .corte-controls,.corte-spacer{ display:none; }
+  .vista-titulo{ margin-left:auto; margin-right:auto; }
+}
+@media (max-width:480px){
+  .eri-text { font-size: 1.4rem; }
+}
+
+/* ==========================================
+   SEMANA ACTUAL (efecto info top)
+   ========================================== */
+@keyframes semanaExplosiva {
+  0%,100%{
+    transform: scale(1);
+    color:#ff2bd6;
+    text-shadow: 0 0 10px #ff2bd6,0 0 20px #ff2bd6,0 0 40px #ff0080;
+  }
+  50%{
+    transform: scale(1.15);
+    color:#00f7ff;
+    text-shadow: 0 0 20px #00f7ff,0 0 40px #00f7ff,0 0 70px #7a00ff,0 0 90px #ff00ff;
+  }
+}
+.semana-explosiva{
+  font-size: 22px;
+  font-weight: 900;
+  display:inline-block;
+  animation: semanaExplosiva 1.6s infinite ease-in-out;
+  letter-spacing:1.5px;
+  padding:4px 10px;
+  border-radius:6px;
+  background: rgba(0,242,255,0.08);
+}
+
+/* ==========================================
+   (LEGADO) CLASES DE COLUMNA — NEUTRALIZADAS
+   ========================================== */
+/* Estas clases pintaban columnas completas; se neutralizan para que no afecten.
+   Si más adelante quieres usarlas, quita los !important de estos overrides. */
+.col-semana-actual,
+.col-semana-contada {
+  animation: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  position: static !important;
+}
+.col-semana-contada::after {
+  content: none !important;
+}
+
+/* ==========================================
+   ÚNICA CELDA PRINCIPAL (S{actual})
+   ========================================== */
+@keyframes celdaPulse {
+  0%, 100% {
+    box-shadow: 0 0 16px rgba(255,212,0,0.30), inset 0 0 10px rgba(255,212,0,0.10);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(255,212,0,0.55), inset 0 0 14px rgba(255,212,0,0.16);
+  }
+}
+td.celda-principal {
+  outline: 3px solid var(--yellow-core);
+  background: rgba(255, 212, 0, 0.18) !important;
+  box-shadow: 0 0 18px rgba(255, 212, 0, 0.35), inset 0 0 10px rgba(255, 212, 0, 0.12);
+  position: relative;
+  animation: celdaPulse 2.2s ease-in-out infinite;
+}
+
+/* (Opcional) badge simple en el TH sin heredar estilos por columna */
+th .estado-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  color: #0b1741;
+  background: #ffef5a;
+}
+/* Neutraliza cualquier pintado por columna (por si quedara algo) */
+.col-semana-actual,
+.col-semana-contada {
+  animation: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  position: static !important;
+}
+.col-semana-contada::after { content: none !important; }
+
+/* Pulso sutil compartido */
+@keyframes thPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 16px rgba(255,255,255,0.20),
+      inset 0 0 10px rgba(255,255,255,0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 26px rgba(255,255,255,0.35),
+      inset 0 0 14px rgba(255,255,255,0.12);
+  }
+}
+/* Neutraliza posibles estilos de columna viejos (por si quedara algo) */
+.col-semana-actual,
+.col-semana-contada {
+  animation: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  position: static !important;
+}
+.col-semana-contada::after { content: none !important; }
+
+/* === Color de las celdas actual, retraso y adelanto  === */
+th.th-actual {
+  outline: 3px solid var(--yellow-core);
+  background: rgba(0, 204, 255, 0.18) !important;
+  box-shadow: 0 0 18px rgba(0, 247, 255, 0.35), inset 0 0 10px rgba(0, 255, 255, 0.12);
+  animation: thPulse 2.2s ease-in-out infinite;
+}
+
+th.th-retraso {
+  outline: 1.5px solid #ff3b3b;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.16), transparent 60%),
+    radial-gradient(circle at center, rgba(255, 59, 59, 0.55), rgba(255, 59, 59, 0.22)) !important;
+  box-shadow:
+    0 0 28px rgba(255, 59, 59, 1),
+    0 0 76px rgba(255, 59, 59, 0.85),
+    0 0 120px rgba(255, 137, 59, 0.55),
+    inset 0 0 18px rgba(255, 121, 59, 0.4);
+  color: #fff;
+  animation: thPulseRed 1.7s ease-in-out infinite;
+}
+
+th.th-adelanto {
+  /* Borde más fino para sensación de “energía” */
+  outline: 1.5px solid #c77dff;
+
+  /* Núcleo luminoso (blanco) + bleeding del púrpura */
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.16), transparent 62%),
+    radial-gradient(circle at center, rgba(199, 125, 255, 0.58), rgba(199, 125, 255, 0.22)) !important;
+
+  /* Halos múltiples: corto, medio y largo + brillo interior fuerte */
+  box-shadow:
+    0 0 28px rgba(199, 125, 255, 1),
+    0 0 76px rgba(199, 125, 255, 0.85),
+    0 0 120px rgba(199, 125, 255, 0.55),
+    inset 0 0 18px rgba(199, 125, 255, 0.40);
+
+  /* Texto siempre legible en dark */
+  color: #fff;
+
+  /* Pulso más rápido para “panel activo” */
+  animation: thPulsePurple 1.7s ease-in-out infinite;
+  will-change: box-shadow, background;
+}
+/* Pulso sutil compartido */
+@keyframes thPulse {
+  0%, 100% {
+    box-shadow: 0 0 16px rgba(255,255,255,0.20), inset 0 0 10px rgba(255,255,255,0.08);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(255,255,255,0.35), inset 0 0 14px rgba(255,255,255,0.12);
+  }
+}
+
+/* Badge del TH con el texto del estado */
+th .estado-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  color: #0b1741;
+  background: #ffef5a; /* amarillito legible en tu tema */
+}/* botones de vista */
+.btn-vista{
+  transition: all .25s ease;
+}
+
+/* botón activo (plateado neon) */
+.btn-activo{
+  background: linear-gradient(145deg,#e5e5e5,#8c8c8c);
+  color:#000;
+
+  border:1px solid #e0e0e0;
+
+  box-shadow:
+    0 0 6px #ffffff,
+    0 0 12px #d9d9d9,
+    0 0 20px #cfcfcf;
+
+  transform: scale(1.05);
+}
+
+/* glow cuando pasa el mouse */
+/* 🔥 FUERZA TOTAL PARA EL BOTÓN */
+button.btn-macro-running {
+  background: linear-gradient(135deg, #ffcc00, #ffd700, #ffb300) !important;
+  color: #000 !important;
+
+  font-weight: 900 !important;
+
+  border: 2px solid #ffb300 !important;
+
+  box-shadow:
+    0 0 25px rgba(255, 204, 0, 1),
+    0 0 50px rgba(255, 215, 0, 0.9),
+    0 0 80px rgba(255, 179, 0, 0.7) !important;
+
+  transform: scale(1.05);
+}
+
+/* 🚫 elimina efectos base mientras corre */
+button.btn-macro-running::before,
+button.btn-macro-running::after {
+  display: none !important;
+}
+
+/* 🚫 evita hover base */
+button.btn-macro-running:hover {
+  transform: none !important;
+  box-shadow: 0 0 40px gold !important;
+}

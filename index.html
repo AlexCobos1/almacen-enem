@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Almacén ENEM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Control de Inventarios Almacén ENEM · ENEM" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
+  <!-- Fuente Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+	
+<!-- Estilos -->
+<link rel="stylesheet" href="styles.css?v=1.0" />
+
+<!-- Estilos -->
+<link rel="stylesheet" href="styles.css?v=1.0" />
+
+<!-- Conexión a Firebase Realtime Database -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js" defer></script>
+
+<!-- XLSX para leer Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+
+<!-- MSAL (opcional, para Outlook via Graph). Si no lo usarás, puedes comentar esta línea. -->
+<script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js" defer></script>
+
+<!-- Lógica principal -->
+<script src="app.js?v=1.0" defer></script>
+
+
+</head>
+
+<body>
+  <!-- Enlace de salto (accesibilidad) -->
+  <a href="#tabla" class="skip-link">Saltar al contenido</a>
+
+  <!-- Footer fijo (marca) -->
+  <footer class="eri-footer" aria-label="Pie de página ERI">
+    <div class="eri-logo">ERI</div>
+    <div class="eri-text">Exactitud · Registro · Inventario</div>
+  </footer>
+
+  <main class="eri-container">
+    <h2>Control de Inventarios Almacén ENEM</h2>
+
+    <!-- Info de fecha/semana/corte -->
+    <div class="info" id="infoSemana"></div>
+
+    <!-- Bloqueo / Desbloqueo -->
+    <!-- Mejora: aria-pressed para reflejar estado del toggle -->
+    <form id="loginForm" aria-label="Bloqueo de la interfaz">
+      <label for="clave"><strong>Clave:</strong></label>
+      <input type="password" id="clave" autocomplete="current-password" />
+      <button
+        type="button"
+        id="btnLogin"
+        aria-label="Bloquear o desbloquear"
+        aria-pressed="true">🔒 Bloqueado</button>
+    </form>
+
+    <!-- Importar XLSX / Enviar -->
+    <form id="importForm" class="import-export" aria-label="Importación y envío">
+      <label for="xlsxFile"><strong>Importar conteo desde Excel (.xlsx):</strong></label>
+      <!-- required para reforzar el flujo; validación real la hace app.js -->
+      <input type="file" id="xlsxFile" accept=".xlsx,.xls" required />
+      <button type="button" id="btnImportXlsx" aria-label="Importar archivo Excel">📥 Importar XLSX</button>
+      <button type="button" id="btnMacro">⚙️ Ejecutar Macro</button>
+      <button type="button" id="btnEmail" aria-label="Abrir Outlook con correo listo">✉️ Enviar correo</button>
+    </form>
+ <div id="progressContainer" style="display:none; margin-top:10px;">
+  <div style="background:#222; border-radius:5px; overflow:hidden; height:20px;">
+    <div id="progressBar" style="width:0%; height:100%; background:gold; transition:width 0.5s;"></div>
+  </div>
+  <div id="progressText" style="font-size:12px; margin-top:5px; color:#ccc;"></div>
+</div>
+    <!-- Vistas: cambian QUÉ se cuenta en la tabla -->
+    <div class="filtro" aria-label="Vistas de conteo">
+      <div style="display:flex; gap:8px; flex-wrap: wrap; align-items:center;">
+        <span>Vista:</span>
+       <button type="button" id="btnCodigos" class="btn-vista">🔢 Códigos</button>
+<button type="button" id="btnUbicaciones" class="btn-vista">📍 Ubicaciones</button>
+<button type="button" id="btnUAs" class="btn-vista">📦 UA’s</button>
+<button type="button" id="btnIndicadores" class="btn-vista">📊 Indicadores</button>
+      </div>
+    </div>
+
+    <!-- Filtro de corte + Título centrado de vista -->
+    <div class="filtro corte-line" aria-label="Filtro de cortes y título de vista">
+      <div class="corte-controls">
+        <span>Ver corte:</span>
+        <select id="verCorte">
+          <option value="TODOS">📊 Todos</option>
+        </select>
+      </div>
+      <div id="vistaTitulo" class="vista-titulo" aria-live="polite">VISTA: CÓDIGOS</div>
+      <div class="corte-spacer" aria-hidden="true"></div>
+    </div>
+
+    <!-- Panel de listas-resumen (visible en Indicadores, compacto y resaltado) -->
+    <div id="panelResumen"></div>
+
+    <!-- Tabla principal -->
+    <div id="tabla"></div>
+  </main>
+
+</body>
+</html>
